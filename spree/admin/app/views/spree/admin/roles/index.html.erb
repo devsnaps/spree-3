@@ -25,7 +25,16 @@
                 <code><%= role.name %></code>
               </td>
               <td class="w-80">
-                <%= Spree.t(:all) %>
+                <% permission_set_classes = role.role_permission_sets.map(&:permission_set_class) %>
+                <% permission_set_classes = Spree.permissions.permission_sets_for(role.name).map(&:name) if permission_set_classes.empty? %>
+                <% if permission_set_classes.any? %>
+                  <div class="text-sm mb-1"><%= Spree.t('admin.roles.custom_permission_sets', count: permission_set_classes.size) %></div>
+                  <div class="text-xs text-gray-600">
+                    <%= permission_set_classes.map { |class_name| class_name.demodulize.titleize }.join(', ') %>
+                  </div>
+                <% else %>
+                  <span class="text-gray-600"><%= Spree.t('admin.roles.no_permission_sets') %></span>
+                <% end %>
               </td>
               <td class="actions">
                 <%= link_to_edit(role, data: { turbo_frame: '_top' }) %>

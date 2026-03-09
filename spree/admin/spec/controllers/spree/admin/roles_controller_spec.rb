@@ -4,6 +4,8 @@ RSpec.describe Spree::Admin::RolesController, type: :controller do
   stub_authorization!
   render_views
 
+  before { Spree.permissions.reset! }
+
   describe 'GET #index' do
     let!(:roles) { create_list(:role, 3) }
 
@@ -29,7 +31,8 @@ RSpec.describe Spree::Admin::RolesController, type: :controller do
   describe 'POST #create' do
     let(:role_params) do
       {
-        name: 'Default Role'
+        name: 'Default Role',
+        permission_set_classes: ['Spree::PermissionSets::OrderDisplay', 'Spree::PermissionSets::OrderManagement']
       }
     end
 
@@ -42,6 +45,14 @@ RSpec.describe Spree::Admin::RolesController, type: :controller do
 
       expect(role).to be_persisted
       expect(role.name).to eq('Default Role')
+      expect(role.role_permission_sets.pluck(:permission_set_class)).to contain_exactly(
+        'Spree::PermissionSets::OrderDisplay',
+        'Spree::PermissionSets::OrderManagement'
+      )
+      expect(Spree.permissions.permission_sets_for(role.name)).to contain_exactly(
+        Spree::PermissionSets::OrderDisplay,
+        Spree::PermissionSets::OrderManagement
+      )
     end
   end
 
@@ -58,12 +69,22 @@ RSpec.describe Spree::Admin::RolesController, type: :controller do
 
   describe 'PUT #update' do
     let!(:role) { create(:role, name: 'Default Role') }
+    let!(:role_permission_set) { create(:role_permission_set, role: role, permission_set_class: 'Spree::PermissionSets::OrderDisplay') }
 
     it 'updates the role' do
-      put :update, params: { id: role.to_param, role: { name: 'Updated Role' } }
+      put :update, params: {
+        id: role.to_param,
+        role: {
+          name: 'Updated Role',
+          permission_set_classes: ['Spree::PermissionSets::UserDisplay']
+        }
+      }
 
       expect(response).to redirect_to(spree.edit_admin_role_path(role))
       expect(role.reload.name).to eq('Updated Role')
+      expect(role.role_permission_sets.pluck(:permission_set_class)).to contain_exactly('Spree::PermissionSets::UserDisplay')
+      expect(Spree.permissions.permission_sets_for('Default Role')).to be_empty
+      expect(Spree.permissions.permission_sets_for('Updated Role')).to contain_exactly(Spree::PermissionSets::UserDisplay)
     end
   end
 

@@ -3,3 +3,39 @@
     <%= f.spree_text_field :name, required: true %>
   </div>
 </div>
+
+<div class="card mb-6">
+  <div class="card-header">
+    <h5 class="card-title">
+      <%= Spree.t(:permissions) %>
+    </h5>
+  </div>
+  <div class="card-body">
+    <p class="text-gray-600 mb-4"><%= Spree.t('admin.roles.permission_sets.help') %></p>
+    <%= hidden_field_tag 'role[permission_set_classes][]', '' %>
+
+    <div class="flex flex-col gap-3">
+      <% available_permission_sets.each do |permission_set| %>
+        <% checkbox_id = "role_permission_set_#{permission_set[:class_name].demodulize.underscore}" %>
+        <% checked = selected_permission_set_classes.include?(permission_set[:class_name]) %>
+        <label for="<%= checkbox_id %>" class="border rounded p-3 flex items-start gap-3 cursor-pointer hover:bg-gray-50">
+          <div class="form-checkbox mt-0.5">
+            <%= check_box_tag 'role[permission_set_classes][]',
+                              permission_set[:class_name],
+                              checked,
+                              id: checkbox_id,
+                              class: 'custom-control-input' %>
+            <%= label_tag checkbox_id, '', class: 'custom-control-label' %>
+          </div>
+          <div class="flex-1">
+            <strong><%= permission_set[:label] %></strong>
+            <% if permission_set[:description].present? %>
+              <p class="text-sm text-gray-600 mt-1 mb-0"><%= permission_set[:description] %></p>
+            <% end %>
+            <p class="text-xs text-gray-500 mt-1 mb-0"><code><%= permission_set[:class_name] %></code></p>
+          </div>
+        </label>
+      <% end %>
+    </div>
+  </div>
+</div>

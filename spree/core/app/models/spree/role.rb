@@ -10,9 +10,12 @@ module Spree
     # Associations
     #
     has_many :role_users, class_name: 'Spree::RoleUser', dependent: :destroy
+    has_many :role_permission_sets, class_name: 'Spree::RolePermissionSet', dependent: :destroy
     has_many :users, through: :role_users, source: :user, source_type: Spree.user_class.to_s
     has_many :admin_users, through: :role_users, source: :user, source_type: Spree.admin_user_class.to_s
     has_many :invitations, class_name: 'Spree::Invitation', dependent: :destroy
+
+    after_destroy_commit -> { Spree.permissions.clear(name) }
 
     #
     # Scopes

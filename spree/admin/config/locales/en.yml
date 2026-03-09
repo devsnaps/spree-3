@@ -195,6 +195,53 @@ en:
         refunded: Refunded
         remove_user_from_this_order: Remove customer from this order
         unfulfilled: Unfulfilled
+      roles:
+        custom_permission_sets:
+          one: 1 permission set
+          other: "%{count} permission sets"
+        no_permission_sets: No permission sets assigned
+        permission_sets:
+          help: Select one or more permission sets to define what this role can access in the Admin dashboard.
+          items:
+            configuration_management:
+              name: Configuration Management
+              description: Manage store settings, payment/shipping configuration, taxes, and policies.
+            dashboard_display:
+              name: Dashboard Display
+              description: View the admin dashboard and analytics widgets.
+            order_display:
+              name: Order Display
+              description: View orders, payments, shipments, returns, refunds, and related data.
+            order_management:
+              name: Order Management
+              description: Full order operations including editing, fulfillment, returns, and payment actions.
+            product_display:
+              name: Product Display
+              description: View catalog resources including products, variants, taxons, and pricing.
+            product_management:
+              name: Product Management
+              description: Full catalog management for products, variants, assets, and taxonomy.
+            promotion_management:
+              name: Promotion Management
+              description: Manage promotions, coupon codes, and promotion rules/actions.
+            role_management:
+              name: Role Management
+              description: Manage staff roles and role assignments.
+            stock_display:
+              name: Stock Display
+              description: View stock items, stock locations, and stock movements.
+            stock_management:
+              name: Stock Management
+              description: Manage inventory, stock locations, and stock movements.
+            super_user:
+              name: Super User
+              description: Full administrative access (with built-in critical safety restrictions).
+            user_display:
+              name: User Display
+              description: View customers, addresses, and saved payment methods.
+            user_management:
+              name: User Management
+              description: Full customer account management, including addresses and payment sources.
       page_builder:
         background_color: Background color
         border_bottom_width: Border bottom width
