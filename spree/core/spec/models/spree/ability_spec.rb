@@ -168,6 +168,56 @@ describe Spree::Ability, type: :model do
     end
   end
 
+  context 'when role has database permissions' do
+    let(:user) { create(:admin_user, :without_admin_role) }
+    let(:role) { create(:role, name: 'catalog_manager') }
+    let(:product) { create(:product) }
+    let(:order) { create(:order) }
+
+    before do
+      create(:role_user, user: user, role: role, resource: store)
+      create(:role_permission, role: role, subject_class: 'Spree::Product', action: 'read')
+    end
+
+    it 'applies custom role permissions from database' do
+      expect(ability).to be_able_to(:read, product)
+      expect(ability).to be_able_to(:admin, product)
+      expect(ability).not_to be_able_to(:read, order)
+    end
+  end
+
+  context 'when role has dashboard permission from database' do
+    let(:user) { create(:admin_user, :without_admin_role) }
+    let(:role) { create(:role, name: 'dashboard_viewer') }
+
+    before do
+      create(:role_user, user: user, role: role, resource: store)
+      create(:role_permission, role: role, subject_class: 'dashboard', action: 'read')
+    end
+
+    it 'allows admin dashboard access' do
+      expect(ability).to be_able_to(:admin, :dashboard)
+      expect(ability).to be_able_to(:show, :dashboard)
+    end
+  end
+
+  context 'when role has full CRUD permissions on a resource' do
+    let(:user) { create(:admin_user, :without_admin_role) }
+    let(:role) { create(:role, name: 'orders_manager') }
+    let(:order) { create(:order) }
+
+    before do
+      create(:role_user, user: user, role: role, resource: store)
+      %w[create read update destroy].each do |action|
+        create(:role_permission, role: role, subject_class: 'Spree::Order', action: action)
+      end
+    end
+
+    it 'grants manage permission' do
+      expect(ability).to be_able_to(:manage, order)
+    end
+  end
+
   context 'as Guest User' do
     context 'for Country' do
       let(:resource) { Spree::Country.new }

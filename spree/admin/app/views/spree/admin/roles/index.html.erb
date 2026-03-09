@@ -25,7 +25,11 @@
                 <code><%= role.name %></code>
               </td>
               <td class="w-80">
-                <%= Spree.t(:all) %>
+                <% if role.role_permissions.any? %>
+                  <%= Spree.t('admin.roles.custom_permissions', count: role.role_permissions.size) %>
+                <% else %>
+                  <%= Spree.t(:all) %>
+                <% end %>
               </td>
               <td class="actions">
                 <%= link_to_edit(role, data: { turbo_frame: '_top' }) %>

@@ -195,6 +195,11 @@ en:
         refunded: Refunded
         remove_user_from_this_order: Remove customer from this order
         unfulfilled: Unfulfilled
+      roles:
+        custom_permissions:
+          one: 1 custom permission
+          other: "%{count} custom permissions"
+        toggle_all: Toggle all
       page_builder:
         background_color: Background color
         border_bottom_width: Border bottom width

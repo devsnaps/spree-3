@@ -89,6 +89,8 @@ module Spree
       else
         activate_permission_sets(permission_sets)
       end
+
+      apply_permissions_from_roles(role_names)
     end
 
     # Determines the role names for the current user.
@@ -119,6 +121,27 @@ module Spree
       permission_sets.each do |permission_set_class|
         permission_set = permission_set_class.new(self)
         permission_set.activate!
+      end
+    end
+
+    def apply_permissions_from_roles(role_names)
+      return if role_names.blank?
+
+      permissions_by_subject = Spree::Role.where(name: role_names.map(&:to_s))
+                                          .includes(:role_permissions)
+                                          .flat_map(&:role_permissions)
+                                          .group_by(&:subject_class)
+
+      permissions_by_subject.each do |subject_class, role_permissions|
+        subject = subject_class.safe_constantize || subject_class.to_sym
+        actions = role_permissions.map { |permission| permission.action.to_sym }.uniq
+
+        actions.each { |action| can action, subject }
+        can :admin, subject
+
+        if (Spree::RolePermission::ACTIONS.map(&:to_sym) - actions).empty?
+          can :manage, subject
+        end
       end
     end
 

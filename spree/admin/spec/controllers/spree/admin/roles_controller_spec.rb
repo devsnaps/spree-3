@@ -29,7 +29,8 @@ RSpec.describe Spree::Admin::RolesController, type: :controller do
   describe 'POST #create' do
     let(:role_params) do
       {
-        name: 'Default Role'
+        name: 'Default Role',
+        permissions: ['Spree::Product|read', 'Spree::Order|update']
       }
     end
 
@@ -42,6 +43,10 @@ RSpec.describe Spree::Admin::RolesController, type: :controller do
 
       expect(role).to be_persisted
       expect(role.name).to eq('Default Role')
+      expect(role.role_permissions.pluck(:subject_class, :action)).to contain_exactly(
+        ['Spree::Product', 'read'],
+        ['Spree::Order', 'update']
+      )
     end
   end
 
@@ -58,12 +63,16 @@ RSpec.describe Spree::Admin::RolesController, type: :controller do
 
   describe 'PUT #update' do
     let!(:role) { create(:role, name: 'Default Role') }
+    let!(:role_permission) { create(:role_permission, role: role, subject_class: 'Spree::Order', action: 'read') }
 
     it 'updates the role' do
-      put :update, params: { id: role.to_param, role: { name: 'Updated Role' } }
+      put :update, params: { id: role.to_param, role: { name: 'Updated Role', permissions: ['Spree::Product|create'] } }
 
       expect(response).to redirect_to(spree.edit_admin_role_path(role))
       expect(role.reload.name).to eq('Updated Role')
+      expect(role.role_permissions.pluck(:subject_class, :action)).to contain_exactly(
+        ['Spree::Product', 'create']
+      )
     end
   end
 
