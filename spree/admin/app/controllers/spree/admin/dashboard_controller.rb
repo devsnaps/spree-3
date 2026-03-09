@@ -72,6 +72,18 @@ module Spree
 
       private
 
+      # Dashboard analytics uses a custom action name (:analytics).
+      # Role permissions expose :read, so map analytics authorization to read.
+      def authorize_admin
+        authorize! :admin, :dashboard
+
+        if action == :analytics
+          authorize! :read, :dashboard
+        else
+          authorize! action, :dashboard
+        end
+      end
+
       def load_vendor
         return unless defined?(Spree::Vendor)
 

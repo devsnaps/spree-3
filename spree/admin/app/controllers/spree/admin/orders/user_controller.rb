@@ -87,12 +87,18 @@ module Spree
 
         private
 
+        def load_order
+          @order = current_store.orders.find_by_prefix_id!(params[:order_id])
+          authorize! :update_customer, @order
+        end
+
         def user_params
           params.require(:user).permit(permitted_user_attributes)
         end
 
         def authorize_admin
-          authorize! :update_customer, @order
+          authorize! :admin, Spree::Order
+          authorize! :update, Spree::Order
         end
       end
     end

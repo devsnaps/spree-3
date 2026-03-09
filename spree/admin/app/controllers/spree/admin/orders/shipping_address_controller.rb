@@ -79,6 +79,11 @@ module Spree
         def address_params
           params.require(:address).permit(permitted_address_attributes)
         end
+
+        def authorize_admin
+          authorize! :admin, Spree::Order
+          authorize! :update, Spree::Order
+        end
       end
     end
   end

@@ -147,7 +147,8 @@ Rails.application.config.after_initialize do
     customers.add :newsletter_subscribers,
                   label: :newsletter_subscribers,
                   url: :admin_newsletter_subscribers_path,
-                  position: 10
+                  position: 10,
+                  if: -> { can?(:read, Spree::NewsletterSubscriber) }
   end
 
   # Promotions with submenu

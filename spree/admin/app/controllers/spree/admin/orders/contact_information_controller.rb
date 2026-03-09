@@ -39,6 +39,11 @@ module Spree
         def order_params
           params.require(:order).permit(:email)
         end
+
+        def authorize_admin
+          authorize! :admin, Spree::Order
+          authorize! :update, Spree::Order
+        end
       end
     end
   end

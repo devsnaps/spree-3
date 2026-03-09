@@ -56,6 +56,7 @@ import ColorPaletteController from 'spree/admin/controllers/color_palette_contro
 import ColumnSelectorController from 'spree/admin/controllers/column_selector_controller'
 import ColorPickerController from 'spree/admin/controllers/color_picker_controller'
 import DropdownController from 'spree/admin/controllers/dropdown_controller'
+import ExportDialogController from 'spree/admin/controllers/export_dialog_controller'
 import FiltersController from 'spree/admin/controllers/filters_controller'
 import FontPickerController from 'spree/admin/controllers/font_picker_controller'
 import HighlightController from 'spree/admin/controllers/highlight_controller'
@@ -124,7 +125,7 @@ application.register('drawer', Dialog)
 application.register('disable-submit-button', DisableSubmitButtonController)
 application.register('dropdown', DropdownController)
 application.register('enable-button', EnableButtonController)
-application.register('export-dialog', Dialog)
+application.register('export-dialog', ExportDialogController)
 application.register('filters', FiltersController)
 application.register('font-picker', FontPickerController)
 application.register('highlight', HighlightController)
